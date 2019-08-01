@@ -1,0 +1,15 @@
+language: node_js
+cache: npm
+
+before_script:
+- yarn build
+- yarn eslint
+
+deploy:
+  - provider: npm
+    email: code@ealush.com
+    skip_cleanup: true
+    api_key: $NPM_TOKEN
+    on:
+      repo: ealush/n4s
+      branch: master
