@@ -4,7 +4,7 @@ const Enforce = enforce.Enforce;
 const allRules = Object.keys(runnables);
 const _proxy = Proxy;
 
-const suite = (noProxy) => describe('Test Passable\'s enforce function', () => {
+const suite = (noProxy) => describe('Test enforce function', () => {
     let enforce = new Enforce({});
 
     if (noProxy) {

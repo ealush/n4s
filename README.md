@@ -18,8 +18,8 @@ enforce(4).lessThan(2);
 - [Custom Enforce Rules](#custom-enforce-rules)
     - [Writing Custom Enforce Rules](#custom-enforce-rules)
 - [Enforce rules](#enforce-rules)
-    - [equal](#equals)
-    - [notEqual](#notequal)
+    - [equals](#equals)
+    - [notEquals](#notequals)
     - [isEmpty](#isempty)
     - [isNotEmpty](#isnotempty)
     - [isNumeric](#isnumeric)
@@ -151,14 +151,12 @@ Reverse implementation of `equals`.
 
 ```js
 enforce('1').notEquals(1);
-
 enforce([1, 2, 3]).notEquals([1, 2, 3]);
 ```
 
 #### failing
 ```js
 enforce(1).notEquals(1);
-
 enforce('hello').notEquals('hello');
 
 const a = [1, 2, 3];
@@ -177,11 +175,6 @@ Expected results are:
 * number: checks the value of the number. (`0` and `NaN` are empty)
 * boolean: `false` is empty.
 * undefined/null: are both empty.
-
-### Arguments
-| Name   | Type      | Required? | Description
-|--------|-----------|-----------|------------
-| expect | `Boolean` | No        | when passed `false`, the negative result will be tested
 
 ### Usage examples:
 
@@ -216,35 +209,15 @@ Reverse implementation of `isEmpty`.
 
 ```js
 enforce([1]).isNotEmpty();
-// passes
-```
-
-```js
 enforce('1').isNotEmpty();
-// passes
-```
-
-```js
 enforce({1:1}).isNotEmpty();
 // passes
 ```
 
 ```js
 enforce([]).isNotEmpty();
-// throws
-```
-
-```js
 enforce('').isNotEmpty();
-// throws
-```
-
-```js
 enforce({}).isNotEmpty();
-// throws
-```
-
-```js
 enforce(0).isNotEmpty();
 // throws
 ```
@@ -253,11 +226,6 @@ enforce(0).isNotEmpty();
 ## isNumeric
 ### Description
 Checks if a value is a representation of a real number
-
-### Arguments
-| Name   | Type      | Required? | Description
-|--------|-----------|-----------|------------
-| expect | `Boolean` | No        | when passed `false`, the negative result will be tested
 
 ### Usage examples:
 
@@ -874,11 +842,6 @@ Anything not in the following list is considered to be truthy.
 * `NaN`
 * empty string (`""`)
 
-### Arguments
-| Name   | Type      | Required? | Description
-|--------|-----------|-----------|------------
-| expect | `Boolean` | No        | when passed `false`, the negative result will be tested
-
 ### Usage examples:
 
 ```js
@@ -949,11 +912,6 @@ enforce(undefined).isFalsy();
 ### Description
 Checks if a value is of type `Array`.
 
-### Arguments
-| Name   | Type      | Required? | Description
-|--------|-----------|-----------|------------
-| expect | `Boolean` | No        | when passed `false`, the negative result will be tested
-
 ### Usage examples:
 
 ```js
@@ -988,11 +946,6 @@ enforce('hello').isNotArray();
 ## isNumber
 ### Description
 Checks if a value is of type `number`.
-
-### Arguments
-| Name   | Type      | Required? | Description
-|--------|-----------|-----------|------------
-| expect | `Boolean` | No        | when passed `false`, the negative result will be tested
 
 ### Usage examples:
 
@@ -1040,11 +993,6 @@ enforce(143).isNotNumber();
 ## isString
 ### Description
 Checks if a value is of type `String`.
-
-### Arguments
-| Name   | Type      | Required? | Description
-|--------|-----------|-----------|------------
-| expect | `Boolean` | No        | when passed `false`, the negative result will be tested
 
 ### Usage examples:
 

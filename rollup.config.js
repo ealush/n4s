@@ -1,8 +1,6 @@
 import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
-import replace from 'rollup-plugin-replace';
 import { terser } from 'rollup-plugin-terser';
-const { version } = require('./package.json');
 
 const output = {
     name: 'enforce',
@@ -11,10 +9,7 @@ const output = {
 
 const plugins = [
     resolve(),
-    babel(),
-    replace({
-        ENFORCE_VERSION: JSON.stringify(version)
-    })
+    babel()
 ];
 
 export default [{
