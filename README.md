@@ -1,23 +1,33 @@
 # Enforce
 Enforce is a validation assertions library. It allows you to run your data against rules and conditions and test whether it passes your validations. It is intended for validation logic that gets repeated over and over again and should not be written manually. It comes with a wide-variety of pre-built rules, but it can also be extended to support your own repeated custom logic.
 
-The way Enforce operates is similar to most common assertion libraries - if the validation fails, it throws an Error, and if the validation succeeds, it returns the current instance of Enforce to allow chaining more rules.
+The way Enforce operates is similar to most common assertion libraries. You pass it a value, and one or more rules to test your value against - if the validation fails, it throws an Error, otherwise - it will move on to the next rule rule in the chain.
 
 ```js
 import enforce from 'n4s'
 
-enforce(4).isNumber();
+enforce(4)
+    .isNumber();
 // passes
 
-enforce(4).lessThan(2);
-// throws an error
+enforce(4)
+    .isNumber()
+    .greaterThan(2);
+// passes
+
+enforce(4)
+    .lessThan(2) // throws an error, will not carry on to the next rule
+    .greaterThan(3);
 ```
 
-# Content
-- [Chaining enforce rules](#chaining-enforce-rules)
-- [Custom Enforce Rules](#custom-enforce-rules)
-    - [Writing Custom Enforce Rules](#custom-enforce-rules)
-- [Enforce rules](#enforce-rules)
+## Installation
+
+```
+npm i n4s
+```
+
+## Content
+- [List of Enforce rules](#enforce-rules)
     - [equals](#equals)
     - [notEquals](#notequals)
     - [isEmpty](#isempty)
@@ -50,59 +60,10 @@ enforce(4).lessThan(2);
     - [isNotString](#isnotstring)
     - [isOdd](#isodd)
     - [isEven](#iseven)
+- [Custom Enforce Rules](#custom-enforce-rules)
 
 
-## Chaining enforce rules
-
-All of enforce's rules are chainable and can be used more than once in the same chain.
-When chained, all blocks share an `AND` relationship, meaning that if one block fails, the whole test fails as well.
-
-The following are valid uses of enforce.
-
-```js
-enforce([1,2,3,4,5,6]).longerThan(5).isArray();
-
-enforce('North Dakota, por favor').shorterThan(10).longerThan(6);
-
-enforce('Toto, I\'ve a feeling we\'re not in Kansas anymore').notMatches(/0-9/);
-```
-
-Enforce exposes all predefined and custom rules. You may use chaining to make multiple enfocements for the same value.
-
-
-# Custom enforce rules
-To make it easier to reuse logic across your application, sometimes you would want to encapsulate bits of logic in rules that you can use later on, for example, "what's considered a valid email".
-
-Your custom rules are essentially a single javascript object containing your rules.
-```js
-const myCustomRules = {
-    isValidEmail: (value) => value.indexOf('@') > -1,
-    hasKey: (value, {key}) => value.hasOwnProperty(key),
-    passwordsMatch: (passConfirm, options) => passConfirm === options.passConfirm && options.passIsValid
-}
-```
-Just like the predefined rules, your custom rules can accepts two parameters:
-* `value` The actual value you are testing against.
-* `args` (optional) the arguments which you pass on when running your tests.
-
-
-You can extend enforce with your custom rules by creating a new instance of `Enforce` and adding the rules object as the argument.
-
-```js
-import Enforce from 'n4s';
-
-const myCustomRules = {
-    isValidEmail: (value) => value.indexOf('@') > -1,
-    hasKey: (value, key) => value.hasOwnProperty(key),
-    passwordsMatch: (passConfirm, options) => passConfirm === options.passConfirm && options.passIsValid
-}
-
-const enforce = new Enforce(myCustomRules);
-
-enforce(user.email).isValidEmail();
-```
-
-# enforce rules
+# list of enforce rules
 Enforce rules are functions that allow you to test your data against different criteria. The following rules are supported out-of-the-box
 
 ## equals
@@ -1065,4 +1026,37 @@ enforce('3').isEven();
 enforce('2withNumber').isEven();
 enforce([0]).isEven();
 // throws
+```
+
+
+# Custom enforce rules
+To make it easier to reuse logic across your application, sometimes you would want to encapsulate bits of logic in rules that you can use later on, for example, "what's considered a valid email".
+
+Your custom rules are essentially a single javascript object containing your rules.
+```js
+const myCustomRules = {
+    isValidEmail: (value) => value.indexOf('@') > -1,
+    hasKey: (value, {key}) => value.hasOwnProperty(key),
+    passwordsMatch: (passConfirm, options) => passConfirm === options.passConfirm && options.passIsValid
+}
+```
+Just like the predefined rules, your custom rules can accepts two parameters:
+* `value` The actual value you are testing against.
+* `args` (optional) the arguments which you pass on when running your tests.
+
+
+You can extend enforce with your custom rules by creating a new instance of `Enforce` and adding the rules object as the argument.
+
+```js
+import Enforce from 'n4s';
+
+const myCustomRules = {
+    isValidEmail: (value) => value.indexOf('@') > -1,
+    hasKey: (value, key) => value.hasOwnProperty(key),
+    passwordsMatch: (passConfirm, options) => passConfirm === options.passConfirm && options.passIsValid
+}
+
+const enforce = new Enforce(myCustomRules);
+
+enforce(user.email).isValidEmail();
 ```
