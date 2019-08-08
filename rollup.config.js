@@ -2,32 +2,31 @@ import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
-const output = {
-    name: 'enforce',
-    format: 'umd'
-};
+const DEFAULT_FORMAT = 'umd';
 
-const plugins = [
+const PLUGINS = [
     resolve(),
     babel()
 ];
 
-export default [{
-    input: 'src/index.js',
+const buildConfig = ({ format = DEFAULT_FORMAT, min = false } = {}) => ({
+    input: './src/index.js',
     output: {
-        file: 'dist/n4s.js',
-        ...output
+        name: 'enforce',
+        format,
+        file: [
+            'dist/n4s',
+            min && 'min',
+            format !== DEFAULT_FORMAT && format,
+            'js'
+        ].filter(Boolean).join('.')
     },
-    plugins
-},
-{
-    input: 'src/index.js',
-    output: {
-        file: 'dist/n4s.min.js',
-        ...output
-    },
-    plugins: [
-        ...plugins,
-        terser()
-    ]
-}];
+    plugins: min
+        ? [ ...PLUGINS, terser() ]
+        : PLUGINS
+});
+
+export default [
+    buildConfig(),
+    buildConfig({ min: true })
+];
