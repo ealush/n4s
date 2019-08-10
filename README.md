@@ -25,3 +25,8 @@ enforce(4)
 ```
 npm i n4s
 ```
+
+[Read the docs](https://ealush.github.io/n4s)
+
+[List of enforce rules](https://ealush.github.io/n4s/#/rules)
+[Custom enforce rules](https://ealush.github.io/n4s/#/custom)
