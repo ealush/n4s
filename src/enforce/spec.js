@@ -1,13 +1,13 @@
-import rules from './rules';
-import enforce from '.';
+import rules from '../rules';
+import enforce from '..';
 const Enforce = enforce.Enforce;
 const allRules = Object.keys(rules);
 const _proxy = Proxy;
 
-const suite = (noProxy) => describe('Test enforce function', () => {
+const suite = (withoutProxy) => describe('Test enforce function', () => {
     let enforce = new Enforce({});
 
-    if (noProxy) {
+    if (withoutProxy) {
         beforeAll(() => {
             global.Proxy = undefined;
             delete global.Proxy;
@@ -34,10 +34,13 @@ const suite = (noProxy) => describe('Test enforce function', () => {
 
             en = enforce(1);
             expect(en.isNumber()).toEqual(en.isNumeric());
+            expect(en.isNumber()).toEqual(en);
             en = enforce('1');
             expect(en.isString()).toEqual(en.isNotEmpty());
+            expect(en.isString()).toEqual(en);
             en = enforce([]);
             expect(en.isArray()).toEqual(en.lengthEquals(0));
+            expect(en.isArray()).toEqual(en);
         });
     });
 
