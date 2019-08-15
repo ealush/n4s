@@ -1,15 +1,11 @@
-import rules from '../runnables';
+import { isRule, globalObject } from '../lib';
+import rules from '../rules';
 import runner from './runner';
-
-const isRule = (rulesObject, name) => (
-    Object.prototype.hasOwnProperty.call(rulesObject, name)
-      && typeof rulesObject[name] === 'function'
-);
 
 function Enforce(customRules = {}) {
     const rulesObject = {...rules, ...customRules};
 
-    if (typeof Proxy === 'function') {
+    if (typeof globalObject.Proxy === 'function') {
         return (value) => {
             const proxy = new Proxy(rulesObject, {
                 get: (rules, fnName) => {
@@ -25,9 +21,10 @@ function Enforce(customRules = {}) {
         };
     }
 
-    // This is relatively heavier, and preferably should only be done when lacking proxy support
-    return (value) => Object.keys(rulesObject).reduce((allRules, fnName) => {
-        if (!isRule(rulesObject, fnName)) { return allRules; }
+    const rulesList = Object.keys(rulesObject);
+
+    return (value) => rulesList.reduce((allRules, fnName) => {
+        if (!isRule(rulesObject, fnName)) { return; }
 
         allRules[fnName] = (...args) => {
             runner(rulesObject[fnName], value, ...args);

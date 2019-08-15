@@ -1,7 +1,7 @@
-import runnables from './runnables';
+import rules from './rules';
 import enforce from '.';
 const Enforce = enforce.Enforce;
-const allRules = Object.keys(runnables);
+const allRules = Object.keys(rules);
 const _proxy = Proxy;
 
 const suite = (noProxy) => describe('Test enforce function', () => {

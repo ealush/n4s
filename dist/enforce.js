@@ -67,6 +67,41 @@
     return target;
   }
 
+  /**
+   * Collects rules with `negativeForm` or `alias` attributes.
+   * Adds a rule with the correct configuration.
+   * @param {Object} rules - enforce rules object
+   * @returns {Object} extended rules object
+   */
+  function extendRules(rules) {
+    var _loop = function _loop(rule) {
+      var negativeForm = rules[rule].negativeForm;
+      var alias = rules[rule].alias;
+
+      if (negativeForm) {
+        rules[negativeForm] = function () {
+          return !rules[rule].apply(rules, arguments);
+        };
+      }
+
+      if (alias) {
+        rules[alias] = rules[rule];
+      }
+    };
+
+    for (var rule in rules) {
+      _loop(rule);
+    }
+
+    return rules;
+  }
+
+  var isRule = function isRule(rulesObject, name) {
+    return Object.prototype.hasOwnProperty.call(rulesObject, name) && typeof rulesObject[name] === 'function';
+  };
+
+  var globalObject = Function('return this')();
+
   function isArray(value) {
     return Boolean(Array.isArray(value));
   }
@@ -221,35 +256,6 @@
     return value % 2 === 0;
   };
 
-  /**
-   * Collects rules with `negativeForm` or `alias` attributes.
-   * Adds a rule with the correct configuration.
-   * @param {Object} rules - enforce rules object
-   * @returns {Object} extended rules object
-   */
-  function extendRules(rules) {
-    var _loop = function _loop(rule) {
-      var negativeForm = rules[rule].negativeForm;
-      var alias = rules[rule].alias;
-
-      if (negativeForm) {
-        rules[negativeForm] = function () {
-          return !rules[rule].apply(rules, arguments);
-        };
-      }
-
-      if (alias) {
-        rules[alias] = rules[rule];
-      }
-    };
-
-    for (var rule in rules) {
-      _loop(rule);
-    }
-
-    return rules;
-  }
-
   var rules = {
     isArray: isArray,
     isNumber: isNumber,
@@ -296,16 +302,12 @@
     }
   }
 
-  var isRule = function isRule(rulesObject, name) {
-    return Object.prototype.hasOwnProperty.call(rulesObject, name) && typeof rulesObject[name] === 'function';
-  };
-
   function Enforce() {
     var customRules = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     var rulesObject = _objectSpread2({}, rules$1, {}, customRules);
 
-    if (typeof Proxy === 'function') {
+    if (typeof globalObject.Proxy === 'function') {
       return function (value) {
         var proxy = new Proxy(rulesObject, {
           get: function get(rules, fnName) {
@@ -325,13 +327,13 @@
         });
         return proxy;
       };
-    } // This is relatively heavier, and preferably should only be done when lacking proxy support
+    }
 
-
+    var rulesList = Object.keys(rulesObject);
     return function (value) {
-      return Object.keys(rulesObject).reduce(function (allRules, fnName) {
+      return rulesList.reduce(function (allRules, fnName) {
         if (!isRule(rulesObject, fnName)) {
-          return allRules;
+          return;
         }
 
         allRules[fnName] = function () {

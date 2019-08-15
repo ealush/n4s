@@ -8,7 +8,6 @@ const LIBRARY_NAME_N4S = 'n4s';
 const LIBRARY_NAME_ENFORCE = 'enforce';
 const LIBRARY_NAME_ENSURE = 'ensure';
 
-
 const PLUGINS = [
     resolve(),
     babel()
