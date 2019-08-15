@@ -4,8 +4,9 @@
  * @param {Function} rule - rule to run
  * @param {Any} value
  * @param {Array} args list of arguments sent from consumer
+ * @throws
  */
-function rule(rule, value, ...args) {
+function runner(rule, value, ...args) {
 
     if (typeof rule !== 'function') { return; }
 
@@ -14,4 +15,4 @@ function rule(rule, value, ...args) {
     }
 }
 
-export default rule;
+export default runner;

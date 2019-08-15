@@ -1,21 +1,26 @@
+import path from 'path';
 import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
 const DEFAULT_FORMAT = 'umd';
+const LIBRARY_NAME_N4S = 'n4s';
+const LIBRARY_NAME_ENFORCE = 'enforce';
+const LIBRARY_NAME_ENSURE = 'ensure';
+
 
 const PLUGINS = [
     resolve(),
     babel()
 ];
 
-const buildConfig = ({ format = DEFAULT_FORMAT, min = false } = {}) => ({
-    input: './src/index.js',
+const buildConfig = ({ format = DEFAULT_FORMAT, min = false, name = '' } = {}) => ({
+    input: path.join('./src', name || '', 'index.js'),
     output: {
-        name: 'enforce',
+        name: name || LIBRARY_NAME_ENFORCE,
         format,
         file: [
-            'dist/n4s',
+            `dist/${ name || LIBRARY_NAME_N4S }`,
             min && 'min',
             format !== DEFAULT_FORMAT && format,
             'js'
@@ -26,7 +31,10 @@ const buildConfig = ({ format = DEFAULT_FORMAT, min = false } = {}) => ({
         : PLUGINS
 });
 
+const genConfig = ({ name } = {}) => [ buildConfig({ name }), buildConfig({name, min: true}) ];
+
 export default [
-    buildConfig(),
-    buildConfig({ min: true })
+    ...genConfig({ name: LIBRARY_NAME_ENFORCE }),
+    ...genConfig({ name: LIBRARY_NAME_ENSURE }),
+    ...genConfig()
 ];
