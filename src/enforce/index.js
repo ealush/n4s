@@ -1,11 +1,11 @@
-import { isRule, globalObject } from '../lib';
+import { isRule, proxySupported } from '../lib';
 import rules from '../rules';
 import runner from './runner';
 
 function Enforce(customRules = {}) {
     const rulesObject = {...rules, ...customRules};
 
-    if (typeof globalObject.Proxy === 'function') {
+    if (proxySupported) {
         return (value) => {
             const proxy = new Proxy(rulesObject, {
                 get: (rules, fnName) => {

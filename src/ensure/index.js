@@ -1,36 +1,43 @@
-import { isRule, globalObject } from '../lib';
+import { isRule, proxySupported } from '../lib';
 import rules from '../rules';
 import runner from './runner';
+
+const defineTest = (registeredRules) => (
+    (value) => (
+        registeredRules.every(({ name, args }) => (
+            runner(rules[name], value, ...args)
+        ))
+    )
+);
+
+const registerRule = (registeredRules, name, args) => [
+    ...registeredRules, {
+        name, args
+    }
+];
 
 function Ensure(customRules = {}) {
     const rulesObject = {...rules, ...customRules};
 
-    if (typeof globalObject.Proxy === 'function') {
+    if (proxySupported) {
         return () => {
-
-            const registeredRules = [];
+            let registeredRules = [];
 
             const proxy = new Proxy(rulesObject, {
                 get: (rules, ruleName) => {
                     if (ruleName === 'test') {
-                        return (value) => (
-                            registeredRules.every(({ name, args }) => (
-                                runner(rules[name], value, ...args))
-                            )
-                        );
+                        return defineTest(registeredRules);
                     }
 
                     if (!isRule(rules, ruleName)) { return; }
 
                     return (...args) => {
-                        registeredRules.push({
-                            name: ruleName,
-                            args
-                        });
+                        registeredRules = registerRule(registeredRules, ruleName, args);
                         return proxy;
                     };
                 }
             });
+
             return proxy;
         };
     }
@@ -38,27 +45,20 @@ function Ensure(customRules = {}) {
     const rulesList = Object.keys(rulesObject);
 
     return () => {
-        const registeredRules = [];
+        let registeredRules = [];
 
         return rulesList.reduce((allRules, ruleName) => {
             if (!isRule(rulesObject, ruleName)) { return; }
 
             allRules[ruleName] = (...args) => {
-                registeredRules.push({
-                    name: ruleName,
-                    args
-                });
+                registeredRules = registerRule(registeredRules, ruleName, args);
                 return allRules;
             };
 
             return allRules;
 
         }, {
-            test: (value) => (
-                registeredRules.every(({ name, args }) => (
-                    runner(rules[name], value, ...args)
-                ))
-            )
+            test: defineTest(registeredRules)
         });
     };
 }

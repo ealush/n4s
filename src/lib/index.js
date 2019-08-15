@@ -1,3 +1,3 @@
 export { default as extendRules } from './extendRules';
 export { default as isRule } from './isRule';
-export { default as globalObject } from './globalObject';
+export { default as proxySupported } from './proxySupported';
