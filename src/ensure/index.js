@@ -2,7 +2,7 @@ import { isRule, proxySupported } from '../lib';
 import rules from '../rules';
 import runner from './runner';
 
-const defineTest = (registeredRules) => (
+const createTestFn = (registeredRules) => (
     (value) => (
         registeredRules.every(({ name, args }) => (
             runner(rules[name], value, ...args)
@@ -26,7 +26,7 @@ function Ensure(customRules = {}) {
             const proxy = new Proxy(rulesObject, {
                 get: (rules, ruleName) => {
                     if (ruleName === 'test') {
-                        return defineTest(registeredRules);
+                        return createTestFn(registeredRules);
                     }
 
                     if (!isRule(rules, ruleName)) { return; }
@@ -58,7 +58,7 @@ function Ensure(customRules = {}) {
             return allRules;
 
         }, {
-            test: defineTest(registeredRules)
+            test: createTestFn(registeredRules)
         });
     };
 }
