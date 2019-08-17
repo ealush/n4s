@@ -5,7 +5,7 @@ import runner from './runner';
 function Enforce(customRules = {}) {
     const rulesObject = {...rules, ...customRules};
 
-    if (proxySupported) {
+    if (proxySupported()) {
         return (value) => {
             const proxy = new Proxy(rulesObject, {
                 get: (rules, fnName) => {
@@ -23,16 +23,17 @@ function Enforce(customRules = {}) {
 
     const rulesList = Object.keys(rulesObject);
 
-    return (value) => rulesList.reduce((allRules, fnName) => {
-        if (!isRule(rulesObject, fnName)) { return; }
-
-        allRules[fnName] = (...args) => {
-            runner(rulesObject[fnName], value, ...args);
-            return allRules;
-        };
-
-        return allRules;
-    }, {});
+    return (value) => rulesList.reduce((allRules, fnName) => (
+        Object.assign(allRules, {
+            ...isRule(rulesObject, fnName)
+                && {
+                    [fnName]: (...args) => {
+                        runner(rulesObject[fnName], value, ...args);
+                        return allRules;
+                    }
+                }
+        })
+    ), {});
 }
 
 const enforce = new Enforce();

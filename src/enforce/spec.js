@@ -25,7 +25,7 @@ const suite = (withoutProxy) => describe('Test enforce function', () => {
             allRules.forEach((rule) => expect(en[rule]).toBeInstanceOf(Function));
         });
 
-        it('Should perdictably return rule object with same rules', () => {
+        it('Should predictably return rule object with same rules', () => {
             expect(Object.keys(enforce())).toEqual(Object.keys(enforce()));
         });
 
@@ -51,7 +51,7 @@ const suite = (withoutProxy) => describe('Test enforce function', () => {
         beforeEach(() => {
             enforce = new Enforce({
                 isImpossible: (v) => !!v.match(/impossible/i),
-                endsWith: (v, arg1) => v.slice(-arg1.length) === arg1
+                endsWith: (v, arg) => v.endsWith(arg)
             });
         });
 

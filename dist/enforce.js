@@ -100,7 +100,7 @@
     return Object.prototype.hasOwnProperty.call(rulesObject, name) && typeof rulesObject[name] === 'function';
   };
 
-  var globalObject = Function('return this')();
+  var proxySupported = typeof Function('return this')().Proxy === 'function';
 
   function isArray(value) {
     return Boolean(Array.isArray(value));
@@ -307,7 +307,7 @@
 
     var rulesObject = _objectSpread2({}, rules$1, {}, customRules);
 
-    if (typeof globalObject.Proxy === 'function') {
+    if (proxySupported) {
       return function (value) {
         var proxy = new Proxy(rulesObject, {
           get: function get(rules, fnName) {

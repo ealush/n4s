@@ -120,7 +120,7 @@
     return Object.prototype.hasOwnProperty.call(rulesObject, name) && typeof rulesObject[name] === 'function';
   };
 
-  var globalObject = Function('return this')();
+  var proxySupported = typeof Function('return this')().Proxy === 'function';
 
   function isArray(value) {
     return Boolean(Array.isArray(value));
@@ -327,7 +327,7 @@
 
     var rulesObject = _objectSpread2({}, rules$1, {}, customRules);
 
-    if (typeof globalObject.Proxy === 'function') {
+    if (proxySupported) {
       return function (value) {
         var proxy = new Proxy(rulesObject, {
           get: function get(rules, fnName) {
@@ -392,24 +392,35 @@
     }
   }
 
+  var createTestFn = function createTestFn(registeredRules) {
+    return function (value) {
+      return registeredRules.every(function (_ref) {
+        var name = _ref.name,
+            args = _ref.args;
+        return runner$1.apply(void 0, [rules$1[name], value].concat(_toConsumableArray(args)));
+      });
+    };
+  };
+
+  var registerRule = function registerRule(registeredRules, name, args) {
+    return [].concat(_toConsumableArray(registeredRules), [{
+      name: name,
+      args: args
+    }]);
+  };
+
   function Ensure() {
     var customRules = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     var rulesObject = _objectSpread2({}, rules$1, {}, customRules);
 
-    if (typeof globalObject.Proxy === 'function') {
+    if (proxySupported) {
       return function () {
         var registeredRules = [];
         var proxy = new Proxy(rulesObject, {
           get: function get(rules, ruleName) {
             if (ruleName === 'test') {
-              return function (value) {
-                return registeredRules.every(function (_ref) {
-                  var name = _ref.name,
-                      args = _ref.args;
-                  return runner$1.apply(void 0, [rules[name], value].concat(_toConsumableArray(args)));
-                });
-              };
+              return createTestFn(registeredRules);
             }
 
             if (!isRule(rules, ruleName)) {
@@ -421,10 +432,7 @@
                 args[_key] = arguments[_key];
               }
 
-              registeredRules.push({
-                name: ruleName,
-                args: args
-              });
+              registeredRules = registerRule(registeredRules, ruleName, args);
               return proxy;
             };
           }
@@ -446,22 +454,13 @@
             args[_key2] = arguments[_key2];
           }
 
-          registeredRules.push({
-            name: ruleName,
-            args: args
-          });
+          registeredRules = registerRule(registeredRules, ruleName, args);
           return allRules;
         };
 
         return allRules;
       }, {
-        test: function test(value) {
-          return registeredRules.every(function (_ref2) {
-            var name = _ref2.name,
-                args = _ref2.args;
-            return runner$1.apply(void 0, [rules$1[name], value].concat(_toConsumableArray(args)));
-          });
-        }
+        test: createTestFn(registeredRules)
       });
     };
   }

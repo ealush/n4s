@@ -20,6 +20,34 @@ const suite = (withoutProxy) => describe('Test ensure function', () => {
         });
     }
 
+    describe('.test() function', () => {
+        describe('When validation succeeds', () => {
+
+            it('Should return true', () => {
+                expect(            [
+                    ensure().inside([1, 2, 3]).test(1),
+                    ensure().isNumber().test(1),
+                    ensure().isArray().test([1]),
+                    ensure().greaterThan(5).test(10),
+                    ensure().greaterThan(5).lt(100).test(10),
+                ].every((res) => !!res)).toBe(true);
+            });
+        });
+
+        describe('When validation fails', () => {
+
+            it.only('Should return false', () => {
+                expect([
+                    ensure().inside([1, 2, 3]).test(10),
+                    ensure().isNumber().test('1'),
+                    ensure().isArray().test(1),
+                    ensure().greaterThan(5).test(2),
+                    ensure().greaterThan(5).lt(100).test(101),
+                ].every((res) => !res)).toBe(true);
+            });
+        });
+    });
+
     describe('Rules object', () => {
         it('Should expose rules as functions', () => {
             const en = ensure();
@@ -32,7 +60,7 @@ const suite = (withoutProxy) => describe('Test ensure function', () => {
             ).toBeInstanceOf(Function);
         });
 
-        it('Should perdictably return rule object with same rules', () => {
+        it('Should predictably return rule object with same rules', () => {
             expect(Object.keys(ensure())).toEqual(Object.keys(ensure()));
         });
 
@@ -49,5 +77,5 @@ const suite = (withoutProxy) => describe('Test ensure function', () => {
     });
 });
 
-suite(false);
+// suite(false);
 suite(true);

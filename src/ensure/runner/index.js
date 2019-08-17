@@ -6,7 +6,6 @@
  * @return {Boolean}
  */
 function runner(rule, value, ...args) {
-
     try {
         return rule(value, ...args) === true;
     } catch(err) {

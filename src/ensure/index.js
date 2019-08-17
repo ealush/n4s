@@ -3,23 +3,17 @@ import rules from '../rules';
 import runner from './runner';
 
 const createTestFn = (registeredRules) => (
-    (value) => (
-        registeredRules.every(({ name, args }) => (
+    (value) => {
+        return registeredRules.every(({ name, args }) => (
             runner(rules[name], value, ...args)
-        ))
-    )
-);
-
-const registerRule = (registeredRules, name, args) => [
-    ...registeredRules, {
-        name, args
+        ));
     }
-];
+);
 
 function Ensure(customRules = {}) {
     const rulesObject = {...rules, ...customRules};
 
-    if (proxySupported) {
+    if (proxySupported()) {
         return () => {
             let registeredRules = [];
 
@@ -32,7 +26,7 @@ function Ensure(customRules = {}) {
                     if (!isRule(rules, ruleName)) { return; }
 
                     return (...args) => {
-                        registeredRules = registerRule(registeredRules, ruleName, args);
+                        registeredRules.push({ name: ruleName, args });
                         return proxy;
                     };
                 }
@@ -47,17 +41,17 @@ function Ensure(customRules = {}) {
     return () => {
         let registeredRules = [];
 
-        return rulesList.reduce((allRules, ruleName) => {
-            if (!isRule(rulesObject, ruleName)) { return; }
-
-            allRules[ruleName] = (...args) => {
-                registeredRules = registerRule(registeredRules, ruleName, args);
-                return allRules;
-            };
-
-            return allRules;
-
-        }, {
+        return rulesList.reduce((allRules, ruleName) => (
+            Object.assign(allRules, {
+                ...isRule(rulesObject, ruleName)
+                    && {
+                        [ruleName]: (...args) => {
+                            registeredRules.push({ name: ruleName, args });
+                            return allRules;
+                        }
+                    }
+            })
+        ), {
             test: createTestFn(registeredRules)
         });
     };
