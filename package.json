@@ -1,6 +1,6 @@
 {
   "name": "n4s",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Enforce - Validation assertions library",
   "main": "dist/n4s.min.js",
   "scripts": {
