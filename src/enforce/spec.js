@@ -1,13 +1,12 @@
-import runnables from './runnables';
+import rules from '../rules';
 import enforce from '.';
-const Enforce = enforce.Enforce;
-const allRules = Object.keys(runnables);
+const allRules = Object.keys(rules);
 const _proxy = Proxy;
 
-const suite = (noProxy) => describe('Test enforce function', () => {
+const suite = ({ withProxy, Enforce }) => describe('Test enforce function', () => {
     let enforce = new Enforce({});
 
-    if (noProxy) {
+    if (withProxy) {
         beforeAll(() => {
             global.Proxy = undefined;
             delete global.Proxy;
@@ -25,7 +24,7 @@ const suite = (noProxy) => describe('Test enforce function', () => {
             allRules.forEach((rule) => expect(en[rule]).toBeInstanceOf(Function));
         });
 
-        it('Should perdictably return rule object with same rules', () => {
+        it('Should predictably return rule object with same rules', () => {
             expect(Object.keys(enforce())).toEqual(Object.keys(enforce()));
         });
 
@@ -34,10 +33,13 @@ const suite = (noProxy) => describe('Test enforce function', () => {
 
             en = enforce(1);
             expect(en.isNumber()).toEqual(en.isNumeric());
+            expect(en.isNumber()).toEqual(en);
             en = enforce('1');
             expect(en.isString()).toEqual(en.isNotEmpty());
+            expect(en.isString()).toEqual(en);
             en = enforce([]);
             expect(en.isArray()).toEqual(en.lengthEquals(0));
+            expect(en.isArray()).toEqual(en);
         });
     });
 
@@ -48,7 +50,7 @@ const suite = (noProxy) => describe('Test enforce function', () => {
         beforeEach(() => {
             enforce = new Enforce({
                 isImpossible: (v) => !!v.match(/impossible/i),
-                endsWith: (v, arg1) => v.slice(-arg1.length) === arg1
+                endsWith: (v, arg) => v.endsWith(arg)
             });
         });
 
@@ -68,5 +70,13 @@ const suite = (noProxy) => describe('Test enforce function', () => {
     });
 });
 
-suite(false);
-suite(true);
+[
+    enforce,
+    require('../../dist/n4s'),
+    require('../../dist/n4s.min.js'),
+    require('../../dist/enforce'),
+    require('../../dist/enforce.min.js')
+].forEach((enforce) => {
+    suite({ withProxy: true, Enforce: enforce.Enforce });
+    suite({ withProxy: false, Enforce: enforce.Enforce });
+});

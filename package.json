@@ -1,12 +1,13 @@
 {
   "name": "n4s",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Enforce - Validation assertions library",
   "main": "dist/n4s.min.js",
   "scripts": {
     "test": "jest",
     "lint": "eslint",
-    "build": "npx rollup src/index.js --config rollup.config.js"
+    "pretest": "npm run build",
+    "build": "npx rollup --config rollup.config.js"
   },
   "repository": {
     "type": "git",
@@ -15,6 +16,7 @@
   "keywords": [
     "assertion",
     "enforce",
+    "ensure",
     "passable",
     "n4s",
     "validations"
@@ -34,7 +36,8 @@
     "eslint": "^6.1.0",
     "faker": "^4.1.0",
     "jest": "^24.8.0",
-    "rollup": "^1.18.0",
+    "lodash": "^4.17.15",
+    "rollup": "^1.19.4",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",

@@ -67,26 +67,6 @@
     return target;
   }
 
-  function _toConsumableArray(arr) {
-    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
-  }
-
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-      return arr2;
-    }
-  }
-
-  function _iterableToArray(iter) {
-    if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-  }
-
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance");
-  }
-
   /**
    * Collects rules with `negativeForm` or `alias` attributes.
    * Adds a rule with the correct configuration.
@@ -370,97 +350,6 @@
 
   var enforce = new Enforce();
   enforce.Enforce = Enforce;
-
-  /**
-   * Run a single rule against ensured value (e.g. `isNumber()`)
-   * @param {Function} rule - rule to run
-   * @param {Any} value
-   * @param {Array} args list of arguments sent from consumer
-   * @return {Boolean}
-   */
-  function runner$1(rule, value) {
-    try {
-      for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-        args[_key - 2] = arguments[_key];
-      }
-
-      return rule.apply(void 0, [value].concat(args)) === true;
-    } catch (err) {
-      return false;
-    }
-  }
-
-  var createTestFn = function createTestFn(registeredRules) {
-    return function (value) {
-      return registeredRules.every(function (_ref) {
-        var name = _ref.name,
-            args = _ref.args;
-        return runner$1.apply(void 0, [rules$1[name], value].concat(_toConsumableArray(args)));
-      });
-    };
-  };
-
-  function Ensure() {
-    var customRules = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    var rulesObject = _objectSpread2({}, rules$1, {}, customRules);
-
-    if (proxySupported()) {
-      return function () {
-        var registeredRules = [];
-        var proxy = new Proxy(rulesObject, {
-          get: function get(rules, ruleName) {
-            if (ruleName === 'test') {
-              return createTestFn(registeredRules);
-            }
-
-            if (!isRule(rules, ruleName)) {
-              return;
-            }
-
-            return function () {
-              for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-                args[_key] = arguments[_key];
-              }
-
-              registeredRules.push({
-                name: ruleName,
-                args: args
-              });
-              return proxy;
-            };
-          }
-        });
-        return proxy;
-      };
-    }
-
-    var rulesList = Object.keys(rulesObject);
-    return function () {
-      var registeredRules = [];
-      return rulesList.reduce(function (allRules, ruleName) {
-        return Object.assign(allRules, _objectSpread2({}, isRule(rulesObject, ruleName) && _defineProperty({}, ruleName, function () {
-          for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-            args[_key2] = arguments[_key2];
-          }
-
-          registeredRules.push({
-            name: ruleName,
-            args: args
-          });
-          return allRules;
-        })));
-      }, {
-        test: createTestFn(registeredRules)
-      });
-    };
-  }
-
-  var ensure = new Ensure();
-  ensure.Ensure = Ensure;
-
-  enforce.ensure = ensure;
-  enforce.Ensure = ensure.Ensure;
 
   return enforce;
 

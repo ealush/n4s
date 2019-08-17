@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.enforce = factory());
+  (global = global || self, global.ensure = factory());
 }(this, function () { 'use strict';
 
   function _typeof(obj) {
@@ -305,80 +305,13 @@
   var rules$1 = extendRules(rules);
 
   /**
-   * Run a single rule against enforced value (e.g. `isNumber()`)
-   *
-   * @param {Function} rule - rule to run
-   * @param {Any} value
-   * @param {Array} args list of arguments sent from consumer
-   * @throws
-   */
-  function runner(rule, value) {
-    if (typeof rule !== 'function') {
-      return;
-    }
-
-    for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-      args[_key - 2] = arguments[_key];
-    }
-
-    if (rule.apply(void 0, [value].concat(args)) !== true) {
-      throw new Error("[Enforce]: invalid ".concat(_typeof(value), " value"));
-    }
-  }
-
-  function Enforce() {
-    var customRules = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    var rulesObject = _objectSpread2({}, rules$1, {}, customRules);
-
-    if (proxySupported()) {
-      return function (value) {
-        var proxy = new Proxy(rulesObject, {
-          get: function get(rules, fnName) {
-            if (!isRule(rules, fnName)) {
-              return;
-            }
-
-            return function () {
-              for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-                args[_key] = arguments[_key];
-              }
-
-              runner.apply(void 0, [rules[fnName], value].concat(args));
-              return proxy;
-            };
-          }
-        });
-        return proxy;
-      };
-    }
-
-    var rulesList = Object.keys(rulesObject);
-    return function (value) {
-      return rulesList.reduce(function (allRules, fnName) {
-        return Object.assign(allRules, _objectSpread2({}, isRule(rulesObject, fnName) && _defineProperty({}, fnName, function () {
-          for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-            args[_key2] = arguments[_key2];
-          }
-
-          runner.apply(void 0, [rulesObject[fnName], value].concat(args));
-          return allRules;
-        })));
-      }, {});
-    };
-  }
-
-  var enforce = new Enforce();
-  enforce.Enforce = Enforce;
-
-  /**
    * Run a single rule against ensured value (e.g. `isNumber()`)
    * @param {Function} rule - rule to run
    * @param {Any} value
    * @param {Array} args list of arguments sent from consumer
    * @return {Boolean}
    */
-  function runner$1(rule, value) {
+  function runner(rule, value) {
     try {
       for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
         args[_key - 2] = arguments[_key];
@@ -395,7 +328,7 @@
       return registeredRules.every(function (_ref) {
         var name = _ref.name,
             args = _ref.args;
-        return runner$1.apply(void 0, [rules$1[name], value].concat(_toConsumableArray(args)));
+        return runner.apply(void 0, [rules$1[name], value].concat(_toConsumableArray(args)));
       });
     };
   };
@@ -459,9 +392,6 @@
   var ensure = new Ensure();
   ensure.Ensure = Ensure;
 
-  enforce.ensure = ensure;
-  enforce.Ensure = ensure.Ensure;
-
-  return enforce;
+  return ensure;
 
 }));
