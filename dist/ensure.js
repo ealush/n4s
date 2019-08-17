@@ -120,7 +120,11 @@
     return Object.prototype.hasOwnProperty.call(rulesObject, name) && typeof rulesObject[name] === 'function';
   };
 
-  var proxySupported = typeof Function('return this')().Proxy === 'function';
+  var GLOBAL_OBJECT = Function('return this')();
+
+  var proxySupported = function proxySupported() {
+    return typeof GLOBAL_OBJECT.Proxy === 'function';
+  };
 
   function isArray(value) {
     return Boolean(Array.isArray(value));
@@ -329,19 +333,12 @@
     };
   };
 
-  var registerRule = function registerRule(registeredRules, name, args) {
-    return [].concat(_toConsumableArray(registeredRules), [{
-      name: name,
-      args: args
-    }]);
-  };
-
   function Ensure() {
     var customRules = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     var rulesObject = _objectSpread2({}, rules$1, {}, customRules);
 
-    if (proxySupported) {
+    if (proxySupported()) {
       return function () {
         var registeredRules = [];
         var proxy = new Proxy(rulesObject, {
@@ -359,7 +356,10 @@
                 args[_key] = arguments[_key];
               }
 
-              registeredRules = registerRule(registeredRules, ruleName, args);
+              registeredRules.push({
+                name: ruleName,
+                args: args
+              });
               return proxy;
             };
           }
@@ -372,20 +372,17 @@
     return function () {
       var registeredRules = [];
       return rulesList.reduce(function (allRules, ruleName) {
-        if (!isRule(rulesObject, ruleName)) {
-          return;
-        }
-
-        allRules[ruleName] = function () {
+        return Object.assign(allRules, _objectSpread2({}, isRule(rulesObject, ruleName) && _defineProperty({}, ruleName, function () {
           for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
             args[_key2] = arguments[_key2];
           }
 
-          registeredRules = registerRule(registeredRules, ruleName, args);
+          registeredRules.push({
+            name: ruleName,
+            args: args
+          });
           return allRules;
-        };
-
-        return allRules;
+        })));
       }, {
         test: createTestFn(registeredRules)
       });

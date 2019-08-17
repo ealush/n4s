@@ -100,7 +100,11 @@
     return Object.prototype.hasOwnProperty.call(rulesObject, name) && typeof rulesObject[name] === 'function';
   };
 
-  var proxySupported = typeof Function('return this')().Proxy === 'function';
+  var GLOBAL_OBJECT = Function('return this')();
+
+  var proxySupported = function proxySupported() {
+    return typeof GLOBAL_OBJECT.Proxy === 'function';
+  };
 
   function isArray(value) {
     return Boolean(Array.isArray(value));
@@ -307,7 +311,7 @@
 
     var rulesObject = _objectSpread2({}, rules$1, {}, customRules);
 
-    if (proxySupported) {
+    if (proxySupported()) {
       return function (value) {
         var proxy = new Proxy(rulesObject, {
           get: function get(rules, fnName) {
@@ -332,20 +336,14 @@
     var rulesList = Object.keys(rulesObject);
     return function (value) {
       return rulesList.reduce(function (allRules, fnName) {
-        if (!isRule(rulesObject, fnName)) {
-          return;
-        }
-
-        allRules[fnName] = function () {
+        return Object.assign(allRules, _objectSpread2({}, isRule(rulesObject, fnName) && _defineProperty({}, fnName, function () {
           for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
             args[_key2] = arguments[_key2];
           }
 
           runner.apply(void 0, [rulesObject[fnName], value].concat(args));
           return allRules;
-        };
-
-        return allRules;
+        })));
       }, {});
     };
   }
