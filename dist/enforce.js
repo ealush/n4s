@@ -306,6 +306,12 @@
     }
   }
 
+  /**
+   * Creates an enforce instance
+   * @param {Object} [customRules]
+   * @return {Function} enforce instance
+   */
+
   function Enforce() {
     var customRules = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 

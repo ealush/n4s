@@ -323,6 +323,14 @@
     }
   }
 
+  /**
+   * Accepts list of registered rules and returns a test function
+   * That runs against them to return a boolean
+   *
+   * @param {Array} registeredRules
+   * @return {Function} test function
+   */
+
   var createTestFn = function createTestFn(registeredRules) {
     return function (value) {
       return registeredRules.every(function (_ref) {
@@ -332,6 +340,12 @@
       });
     };
   };
+  /**
+   * Creates an ensure instance
+   * @param {Object} [customRules]
+   * @return {Function} ensure instance
+   */
+
 
   function Ensure() {
     var customRules = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
