@@ -1,14 +1,13 @@
 import { sample } from 'lodash';
 import rules from '../rules';
 import ensure from '..';
-const Ensure = ensure.Ensure;
 const allRules = Object.keys(rules);
 const _proxy = Proxy;
 
-const suite = (withoutProxy) => describe('Test ensure function', () => {
+const suite = ({withProxy, Ensure}) => describe('Test ensure function', () => {
     let ensure = new Ensure({});
 
-    if (withoutProxy) {
+    if (withProxy) {
         beforeAll(() => {
             global.Proxy = undefined;
             delete global.Proxy;
@@ -36,7 +35,7 @@ const suite = (withoutProxy) => describe('Test ensure function', () => {
 
         describe('When validation fails', () => {
 
-            it.only('Should return false', () => {
+            it('Should return false', () => {
                 expect([
                     ensure().inside([1, 2, 3]).test(10),
                     ensure().isNumber().test('1'),
@@ -77,5 +76,19 @@ const suite = (withoutProxy) => describe('Test ensure function', () => {
     });
 });
 
-// suite(false);
-suite(true);
+[
+    ensure,
+    require('../../dist/ensure'),
+    require('../../dist/ensure.min.js')
+].forEach((ensure) => {
+    suite({ withProxy: true, Ensure: ensure.Ensure });
+    suite({ withProxy: false, Ensure: ensure.Ensure });
+});
+
+[
+    require('../../dist/n4s'),
+    require('../../dist/n4s.min.js')
+].forEach(({ Ensure }) => {
+    suite({ withProxy: true, Ensure: Ensure });
+    suite({ withProxy: false, Ensure: Ensure });
+});

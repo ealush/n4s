@@ -2,6 +2,11 @@ import { isRule, proxySupported } from '../lib';
 import rules from '../rules';
 import runner from './runner';
 
+/**
+ * Creates an enforce instance
+ * @param {Object} [customRules]
+ * @return {Function} enforce instance
+ */
 function Enforce(customRules = {}) {
     const rulesObject = {...rules, ...customRules};
 

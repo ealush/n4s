@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint",
+    "pretest": "npm run build",
     "build": "npx rollup --config rollup.config.js"
   },
   "repository": {
@@ -15,6 +16,7 @@
   "keywords": [
     "assertion",
     "enforce",
+    "ensure",
     "passable",
     "n4s",
     "validations"

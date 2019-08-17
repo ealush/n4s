@@ -2,6 +2,13 @@ import { isRule, proxySupported } from '../lib';
 import rules from '../rules';
 import runner from './runner';
 
+/**
+ * Accepts list of registered rules and returns a test function
+ * That runs against them to return a boolean
+ *
+ * @param {Array} registeredRules
+ * @return {Function} test function
+ */
 const createTestFn = (registeredRules) => (
     (value) => {
         return registeredRules.every(({ name, args }) => (
@@ -10,6 +17,11 @@ const createTestFn = (registeredRules) => (
     }
 );
 
+/**
+ * Creates an ensure instance
+ * @param {Object} [customRules]
+ * @return {Function} ensure instance
+ */
 function Ensure(customRules = {}) {
     const rulesObject = {...rules, ...customRules};
 

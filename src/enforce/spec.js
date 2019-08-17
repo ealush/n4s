@@ -1,13 +1,12 @@
 import rules from '../rules';
-import enforce from '..';
-const Enforce = enforce.Enforce;
+import enforce from '.';
 const allRules = Object.keys(rules);
 const _proxy = Proxy;
 
-const suite = (withoutProxy) => describe('Test enforce function', () => {
+const suite = ({ withProxy, Enforce }) => describe('Test enforce function', () => {
     let enforce = new Enforce({});
 
-    if (withoutProxy) {
+    if (withProxy) {
         beforeAll(() => {
             global.Proxy = undefined;
             delete global.Proxy;
@@ -71,5 +70,13 @@ const suite = (withoutProxy) => describe('Test enforce function', () => {
     });
 });
 
-suite(false);
-suite(true);
+[
+    enforce,
+    require('../../dist/n4s'),
+    require('../../dist/n4s.min.js'),
+    require('../../dist/enforce'),
+    require('../../dist/enforce.min.js')
+].forEach((enforce) => {
+    suite({ withProxy: true, Enforce: enforce.Enforce });
+    suite({ withProxy: false, Enforce: enforce.Enforce });
+});
