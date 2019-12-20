@@ -18,6 +18,7 @@ import shorterThanOrEquals from './shorterThanOrEquals';
 import lengthEquals from './lengthEquals';
 import isOdd from './isOdd';
 import isEven from './isEven';
+import isTruthy from './isTruthy';
 import { extendRules } from '../lib';
 
 const rules = {
@@ -41,6 +42,7 @@ const rules = {
     lengthEquals,
     isOdd,
     isEven,
+    isTruthy
 };
 
 export default extendRules(rules);

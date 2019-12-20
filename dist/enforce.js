@@ -2,7 +2,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = global || self, global.enforce = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
   function _typeof(obj) {
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
@@ -52,13 +52,13 @@
       var source = arguments[i] != null ? arguments[i] : {};
 
       if (i % 2) {
-        ownKeys(source, true).forEach(function (key) {
+        ownKeys(Object(source), true).forEach(function (key) {
           _defineProperty(target, key, source[key]);
         });
       } else if (Object.getOwnPropertyDescriptors) {
         Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
       } else {
-        ownKeys(source).forEach(function (key) {
+        ownKeys(Object(source)).forEach(function (key) {
           Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
         });
       }
@@ -260,6 +260,12 @@
     return value % 2 === 0;
   };
 
+  function isTruthy(value) {
+    return !!value;
+  }
+
+  isTruthy.negativeForm = 'isFalsy';
+
   var rules = {
     isArray: isArray,
     isNumber: isNumber,
@@ -280,7 +286,8 @@
     shorterThanOrEquals: shorterThanOrEquals,
     lengthEquals: lengthEquals,
     isOdd: isOdd,
-    isEven: isEven
+    isEven: isEven,
+    isTruthy: isTruthy
   };
   var rules$1 = extendRules(rules);
 
@@ -359,4 +366,4 @@
 
   return enforce;
 
-}));
+})));

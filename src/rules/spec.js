@@ -38,6 +38,8 @@ const positiveRules = [
     'isNumber',
     'isNumeric',
     'isOdd',
+    'isTruthy',
+    'isFalsy',
     'isString',
     'lengthEquals',
     'lessThan',
