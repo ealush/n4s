@@ -1,5 +1,6 @@
 import path from 'path';
 import resolve from 'rollup-plugin-node-resolve';
+import replace from 'rollup-plugin-replace';
 import babel from 'rollup-plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
@@ -8,9 +9,12 @@ const LIBRARY_NAME_N4S = 'n4s';
 const LIBRARY_NAME_ENFORCE = 'enforce';
 const LIBRARY_NAME_ENSURE = 'ensure';
 
-const PLUGINS = [
+const pluginList = ({ libraryName } = {}) => [
     resolve(),
-    babel()
+    babel(),
+    replace({
+        LIBRARY_NAME: JSON.stringify(libraryName || LIBRARY_NAME_N4S)
+    })
 ];
 
 const buildConfig = ({ format = DEFAULT_FORMAT, min = false, name = '' } = {}) => ({
@@ -26,8 +30,8 @@ const buildConfig = ({ format = DEFAULT_FORMAT, min = false, name = '' } = {}) =
         ].filter(Boolean).join('.')
     },
     plugins: min
-        ? [ ...PLUGINS, terser() ]
-        : PLUGINS
+        ? [ ...pluginList({ libraryName: name }), terser() ]
+        : pluginList({ libraryName: name })
 });
 
 const genConfig = ({ name } = {}) => [ buildConfig({ name }), buildConfig({name, min: true}) ];

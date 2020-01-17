@@ -116,8 +116,20 @@
     return rules;
   }
 
+  function throwError(message) {
+    setTimeout(function () {
+      throw new Error("[".concat("ensure", "]: ").concat(message));
+    });
+  }
+
   var isRule = function isRule(rulesObject, name) {
-    return Object.prototype.hasOwnProperty.call(rulesObject, name) && typeof rulesObject[name] === 'function';
+    var ruleExists = Object.prototype.hasOwnProperty.call(rulesObject, name) && typeof rulesObject[name] === 'function';
+
+    if (!ruleExists) {
+      throwError("Rule \"".concat(name, "\" was not found in rules object. Make sure you typed it correctly."));
+    }
+
+    return ruleExists;
   };
 
   var GLOBAL_OBJECT = Function('return this')();

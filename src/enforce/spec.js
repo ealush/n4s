@@ -32,14 +32,14 @@ const suite = ({ withProxy, Enforce }) => describe('Test enforce function', () =
             let en;
 
             en = enforce(1);
-            expect(en.isNumber()).toEqual(en.isNumeric());
-            expect(en.isNumber()).toEqual(en);
+            expect(en.isNumber()).toBe(en.isNumeric());
+            expect(en.isNumber()).toBe(en);
             en = enforce('1');
-            expect(en.isString()).toEqual(en.isNotEmpty());
-            expect(en.isString()).toEqual(en);
+            expect(en.isString()).toBe(en.isNotEmpty());
+            expect(en.isString()).toBe(en);
             en = enforce([]);
-            expect(en.isArray()).toEqual(en.lengthEquals(0));
-            expect(en.isArray()).toEqual(en);
+            expect(en.isArray()).toBe(en.lengthEquals(0));
+            expect(en.isArray()).toBe(en);
         });
     });
 

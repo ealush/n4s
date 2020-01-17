@@ -67,11 +67,11 @@ const suite = ({withProxy, Ensure}) => describe('Test ensure function', () => {
             let en;
 
             en = ensure();
-            expect(en[sample(allRules)]()).toEqual(en[sample(allRules)]());
-            expect(en[sample(allRules)]()).toEqual(en);
+            expect(en[sample(allRules)]()).toBe(en[sample(allRules)]());
+            expect(en[sample(allRules)]()).toBe(en);
             en = ensure();
-            expect(en[sample(allRules)]()).toEqual(en[sample(allRules)]());
-            expect(en[sample(allRules)]()).toEqual(en);
+            expect(en[sample(allRules)]()).toBe(en[sample(allRules)]());
+            expect(en[sample(allRules)]()).toBe(en);
         });
     });
 });
