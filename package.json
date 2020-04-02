@@ -1,6 +1,6 @@
 {
   "name": "n4s",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Enforce - Validation assertions library",
   "main": "dist/n4s.min.js",
   "scripts": {
@@ -29,9 +29,9 @@
   },
   "homepage": "https://github.com/ealush/n4s#readme",
   "devDependencies": {
+    "@ampproject/rollup-plugin-closure-compiler": "^0.24.0",
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
-    "@babel/preset-flow": "^7.0.0",
     "babel-eslint": "^10.0.2",
     "babel-jest": "^25.1.0",
     "eslint": "^6.1.0",
@@ -39,7 +39,6 @@
     "jest": "^25.1.0",
     "lodash": "^4.17.15",
     "rollup": "^2.0.3",
-    "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-terser": "^5.1.1"

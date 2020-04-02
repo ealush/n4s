@@ -1,7 +1,7 @@
 import path from 'path';
 import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
-import babel from 'rollup-plugin-babel';
+import compiler from '@ampproject/rollup-plugin-closure-compiler';
 import { terser } from 'rollup-plugin-terser';
 
 const DEFAULT_FORMAT = 'umd';
@@ -11,7 +11,7 @@ const LIBRARY_NAME_ENSURE = 'ensure';
 
 const pluginList = ({ libraryName } = {}) => [
     resolve(),
-    babel(),
+    compiler(),
     replace({
         LIBRARY_NAME: JSON.stringify(libraryName || LIBRARY_NAME_N4S)
     })
