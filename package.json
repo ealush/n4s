@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/ealush/n4s#readme",
   "devDependencies": {
-    "@ampproject/rollup-plugin-closure-compiler": "^0.25.2",
+    "@ampproject/rollup-plugin-closure-compiler": "^0.26.0",
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/plugin-transform-object-assign": "^7.8.3",
