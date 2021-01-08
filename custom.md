@@ -1,4 +1,4 @@
-# Custom enforce rules
+# Creating Custom Rules
 
 To make it easier to reuse logic across your application, sometimes you would want to encapsulate bits of logic in rules that you can use later on, for example, "what's considered a valid email".
 
@@ -16,8 +16,6 @@ enforce.extend({
 ```
 
 ```js
-import { enforce } from 'n4s';
-
 enforce.extend({
   isValidEmail: value => value.indexOf('@') > -1,
   hasKey: (value, key) => value.hasOwnProperty(key),

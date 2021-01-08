@@ -1,5 +1,6 @@
 - [Main](./)
 - [List of Enforce Rules](./rules)
-- [Business reated rules](./business_rules)
+- [Schema validations](./coumpound)
+- [Templates and Composites](./template)
 - [Custom Enforce Rules](./custom)
-- [Non throwing validations (ensure)](./ensure)
+- [Consuming external rules](./external)
